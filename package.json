@@ -1,0 +1,33 @@
+{
+  "name": "react-chatbot-openai",
+  "version": "1.0.0",
+  "description": "OpenAI chatbot component for react-chatbot-cli",
+  "main": "src/components/Chatbot/Chatbot.tsx",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/react-chatbot-openai"
+  },
+  "keywords": [
+    "react",
+    "chatbot",
+    "openai",
+    "gpt",
+    "component",
+    "ai"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "openai": "^4.78.0",
+    "react-markdown": "^10.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.0.0"
+  }
+}
