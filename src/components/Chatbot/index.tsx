@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useChatbot } from "../../hooks/useChatbot";
 import Markdown from "react-markdown";
-import "../styles/chatbot.css"
 
 export type ChatbotProps = {
   apiKey?: string;
@@ -143,7 +142,7 @@ export function Chatbot({
 
   const ErrorIcon = () => (
     <svg
-      className="error-icon"
+      className="w-4 h-4 shrink-0"
       fill="currentColor"
       viewBox="0 0 20 20"
     >
@@ -156,7 +155,7 @@ export function Chatbot({
   );
 
   return (
-    <div className="chatbot-wrapper">
+    <div className="relative">
       <style>{`
         .typing-dot {
           width: 8px;
@@ -220,65 +219,121 @@ export function Chatbot({
           75% { transform: translateX(2px); }
         }
 
-        .hover-scale:hover {
-          transform: scale(1.05);
+        .message-bubble p {
+          margin: 0;
+        }
+
+        .message-bubble p+p {
+          margin-top: 0.5rem;
+        }
+
+        .message-bubble code {
+          background-color: rgba(0, 0, 0, 0.1);
+          padding: 0.125rem 0.25rem;
+          border-radius: 0.25rem;
+          font-size: 0.8125rem;
+        }
+
+        .message-bubble pre {
+          background-color: rgba(0, 0, 0, 0.1);
+          padding: 0.5rem;
+          border-radius: 0.375rem;
+          overflow-x: auto;
+          margin: 0.5rem 0;
+        }
+
+        .message-bubble pre code {
+          background: none;
+          padding: 0;
+        }
+
+        .message-bubble ul,
+        .message-bubble ol {
+          margin: 0.5rem 0;
+          padding-left: 1.5rem;
+        }
+
+        .message-bubble li {
+          margin: 0.25rem 0;
+        }
+
+        .chat-messages {
+          scrollbar-width: thin;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 10px;
+          border: 2px solid transparent;
+          background-clip: content-box;
         }
       `}</style>
 
       <button
         onClick={handleOpen}
-        className="chatbot-button"
+        className="fixed bottom-8 right-8 w-16 h-16 rounded-full border-0 cursor-pointer flex items-center justify-center p-0 transition-all duration-300 ease-in-out z-50 shadow-[0_4px_20px_rgba(0,0,0,0.15)] hover:scale-105 hover:shadow-[0_6px_25px_rgba(0,0,0,0.2)]"
         style={{
           backgroundColor: config.primaryColor,
         }}
         aria-label="Abrir chat"
       >
-        <div className="chatbot-avatar-wrapper">
-          <img src={avatar} alt="Chatbot" className="chatbot-avatar" />
+        <div className="relative">
+          <img src={avatar} alt="Chatbot" className="w-12 h-12 rounded-full object-cover" />
           {showWelcome && (
-            <span className="chatbot-notification-badge">1</span>
+            <span className="absolute -top-2 -right-2 min-w-[1.25rem] h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-white">
+              1
+            </span>
           )}
         </div>
       </button>
 
       {showWelcome && !isOpen && (
         <div
-          className="welcome-bubble"
+          className="welcome-bubble fixed bottom-20 right-24 max-w-[20rem] p-4 rounded-2xl rounded-bl-2 cursor-pointer transition-all duration-200 z-50 shadow-[0_4px_16px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)]"
           style={{
             backgroundColor: config.botBubble,
             color: config.botText,
+            borderBottomLeftRadius: '0.5rem',
           }}
           onClick={handleOpen}
         >
-          <div className="welcome-text">{config.welcomeBubble}</div>
+          <div className="text-sm leading-6">{config.welcomeBubble}</div>
         </div>
       )}
 
       {isOpen && (
         <div
-          className="chat-window"
+          className="chat-window fixed bottom-24 right-8 w-80 h-96 rounded-lg flex flex-col overflow-hidden z-50 shadow-[0_10px_40px_rgba(0,0,0,0.2)] max-w-[90vw] max-h-[80vh]"
           style={{
             backgroundColor: config.backgroundColor,
           }}
         >
           <div
-            className="chat-header"
+            className="py-3 px-4 flex items-center gap-3 text-white font-medium border-b border-white/10"
             style={{
               backgroundColor: config.headerColor,
             }}
           >
-            <img src={avatar} alt="Bot" className="chat-header-avatar" />
-            <span className="chat-header-name">{config.chatbotName}</span>
+            <img src={avatar} alt="Bot" className="w-8 h-8 rounded-full object-cover" />
+            <span className="flex-1 text-lg">{config.chatbotName}</span>
 
             {config.showClearButton && messages.length > 0 && (
               <button
                 onClick={handleClear}
-                className="chat-clear-button"
+                className="text-gray-400 bg-transparent border-0 cursor-pointer transition-all duration-200 p-1 rounded flex items-center justify-center hover:text-white hover:bg-white/10"
                 aria-label="Limpar chat"
                 title="Limpar conversa"
               >
                 <svg
-                  className="chat-clear-icon"
+                  className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -295,7 +350,7 @@ export function Chatbot({
 
             <button
               onClick={handleClose}
-              className="chat-close-button"
+              className="text-gray-400 bg-transparent border-0 cursor-pointer text-2xl font-bold leading-none transition-colors duration-200 hover:text-white"
               aria-label="Fechar chat"
             >
               ×
@@ -303,20 +358,20 @@ export function Chatbot({
           </div>
 
           <div
-            className="chat-messages"
+            className="chat-messages flex-1 p-3 overflow-y-auto flex flex-col gap-3"
             style={{ backgroundColor: config.backgroundColor }}
           >
             {firstMessageShown &&
               config.firstBotMessage &&
               messages.length === 0 && (
-                <div className="message-wrapper bot-message">
+                <div className="flex gap-3 items-start">
                   <img
                     src={avatar}
                     alt="Bot"
-                    className="message-avatar"
+                    className="w-8 h-8 rounded-full shrink-0 object-cover"
                   />
                   <div
-                    className="message-bubble bot-bubble"
+                    className="message-bubble max-w-[75%] p-3 rounded-2xl text-sm leading-6 rounded-bl-[0.375rem]"
                     style={{
                       backgroundColor: config.botBubble,
                       color: config.botText,
@@ -330,9 +385,9 @@ export function Chatbot({
             {messages.map((message: Message, index: number) => (
               <div key={index}>
                 {message.role === "user" ? (
-                  <div className="message-wrapper user-message">
+                  <div className="flex gap-3 justify-end">
                     <div
-                      className="message-bubble user-bubble"
+                      className="message-bubble max-w-[75%] p-3 rounded-2xl text-sm leading-6 rounded-br-[0.375rem]"
                       style={{
                         backgroundColor: config.userBubble,
                         color: config.userText,
@@ -342,14 +397,14 @@ export function Chatbot({
                     </div>
                   </div>
                 ) : message.role === "assistant" ? (
-                  <div className="message-wrapper bot-message">
+                  <div className="flex gap-3 items-start">
                     <img
                       src={avatar}
                       alt="Bot"
-                      className="message-avatar"
+                      className="w-8 h-8 rounded-full shrink-0 object-cover"
                     />
                     <div
-                      className="message-bubble bot-bubble"
+                      className="message-bubble max-w-[75%] p-3 rounded-2xl text-sm leading-6 rounded-bl-[0.375rem]"
                       style={{
                         backgroundColor: config.botBubble,
                         color: config.botText,
@@ -359,9 +414,9 @@ export function Chatbot({
                     </div>
                   </div>
                 ) : message.role === "error" ? (
-                  <div className="message-wrapper bot-message">
+                  <div className="flex gap-3 items-start">
                     <div
-                      className="error-icon-wrapper"
+                      className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
                       style={{
                         backgroundColor: config.errorText,
                       }}
@@ -369,17 +424,17 @@ export function Chatbot({
                       <ErrorIcon />
                     </div>
                     <div
-                      className="error-message message-bubble"
+                      className="error-message message-bubble max-w-[75%] p-3 rounded-2xl text-sm leading-6 border-l-4 rounded-bl-[0.375rem]"
                       style={{
                         backgroundColor: config.errorBubble,
                         color: config.errorText,
                         borderLeftColor: config.errorText,
                       }}
                     >
-                      <div className="error-content">
-                        <div className="error-header">
+                      <div className="flex flex-col items-start">
+                        <div className="flex items-center gap-1">
                           <ErrorIcon />
-                          <div className="error-title">Erro</div>
+                          <div className="font-semibold">Erro</div>
                         </div>
                         <div>
                           <Markdown>{message.content}</Markdown>
@@ -397,7 +452,7 @@ export function Chatbot({
           </div>
 
           <div
-            className="chat-input-container"
+            className="flex gap-2 p-3 border-t border-white/10"
             style={{
               backgroundColor: config.headerColor,
             }}
@@ -409,14 +464,14 @@ export function Chatbot({
               onKeyDown={handleKeyPress}
               placeholder="Digite sua mensagem..."
               disabled={loading}
-              className="chat-input"
+              className="flex-1 py-2 px-3 rounded-lg border-0 text-sm outline-none transition-all duration-200 text-white disabled:opacity-50"
               style={{
                 backgroundColor: config.backgroundColor,
               }}
             />
             <button
               onClick={loading ? abortChatMessage : handleSend}
-              className="chat-send-button"
+              className="py-2 px-4 rounded-lg border-0 text-white text-sm font-medium cursor-pointer transition-all duration-200 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 backgroundColor: config.buttonColor,
               }}
