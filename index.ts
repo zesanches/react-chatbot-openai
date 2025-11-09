@@ -1,2 +1,2 @@
-export { Chatbot } from './components/Chatbot';
-export type { ChatbotProps, ChatbotConfig, Message } from './components/Chatbot';
+export { Chatbot } from './src/components/Chatbot';
+export type { ChatbotProps, ChatbotConfig, Message } from './src/components/Chatbot';

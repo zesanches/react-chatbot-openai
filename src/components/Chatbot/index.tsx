@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useChatbot } from "../hooks/useChatbot";
+import { useChatbot } from "../../hooks/useChatbot";
 import Markdown from "react-markdown";
 import "../styles/chatbot.css"
 
